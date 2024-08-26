@@ -1,0 +1,14 @@
+<div class="sidebar">
+    {{ if .Site.Taxonomies.categories }}
+        <ul class="sidebar-categories">
+            {{ range $key, $taxonomy := .Site.Taxonomies.categories }}
+                <li class="sidebar-category">
+                    <!-- 修改链接，去掉 BaseURL，直接用页面内锚点 -->
+                    <a href="#{{ $key }}">{{ $key }}</a>
+                </li>
+            {{ end }}
+        </ul>
+    {{ else }}
+        <p>没有分类数据。</p>
+    {{ end }}
+</div>

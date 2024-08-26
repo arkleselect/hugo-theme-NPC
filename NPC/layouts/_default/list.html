@@ -1,0 +1,7 @@
+{{ define "main" }}
+<section class="article-list">
+  {{ range .Pages }}
+    {{ partial "article-block.html" . }}
+  {{ end }}
+</section>
+{{ end }}

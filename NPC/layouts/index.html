@@ -1,0 +1,57 @@
+{{ define "main" }}
+<div class="hero-image" style="background-image: url('{{ .Params.hero_image }}');">
+    <div class="hero-content" style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+    </div>
+</div>
+
+
+
+<div class="content-container">
+
+
+<!-- 顶部个人资料 -->
+<div class="top-container">
+<img src="{{ .Site.Params.avatar }}" class="top-head" alt="Avatar">
+<p class="top-name">
+    听不见不想看
+</p>
+<p class="top-message">
+    The darkness is boundless, yet humans vainly imagine light
+</p>
+<button class="top-theme-button">按钮</button>
+</div>
+
+
+    <main class="content">
+        <section class="article-list">
+            {{ range where .Pages "Type" "post" }}
+            <a href="{{ .Permalink }}" class="article-link">
+                <article class="article-block">
+                    <div class="article-image-container">
+                        {{ if isset .Params "image" }}
+                        <img src="{{ .Params.image }}" alt="{{ .Title }}" class="article-image">
+                        {{ else }}
+                        <img src="/images/default.png" alt="{{ .Title }}" class="article-image">
+                        {{ end }}
+                    </div>
+                    <div class="article-content">
+                        <h2 class="article-title">{{ .Title }}</h2>
+                        <div class="article-info">
+                            <p class="article-cate">
+                                {{ range $index, $category := .Params.Categories }}
+                                {{ if $index }}, {{ end }}
+                                {{ . | title }}
+                                {{ end }}
+                            </p>
+                            <p class="article-meta">{{ .Date.Format "2006-01-02" }}</p>
+                        </div>
+                    </div>
+                </article>
+            </a>
+            {{ else }}
+            <p>没有找到文章。</p>
+            {{ end }}
+        </section>
+    </main>
+</div>
+{{ end }}
