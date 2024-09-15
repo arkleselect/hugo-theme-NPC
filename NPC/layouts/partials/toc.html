@@ -1,6 +1,0 @@
-{{ if and (.Params.toc) (ne .TableOfContents "<nav id=\"TableOfContents\"></nav>") }}
-<aside id="toc" class="toc">
-  <div class="toc-title">目录</div>
-  {{ .TableOfContents }}
-</aside>
-{{ end }}
