@@ -1,0 +1,75 @@
+<head>
+  <!-- 引用 CSS 文件 -->
+  <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+      // 主题切换按钮的处理程序
+      const themeToggleButton = document.getElementById('theme-toggle');
+      const searchButton = document.getElementById('search-toggle');
+      const searchInput = document.querySelector('.search-input');
+
+      // 读取并应用存储的主题
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.body.classList.add(savedTheme);
+      }
+
+      // 绑定点击事件处理程序
+      if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', themeToggleHandler);
+      }
+
+      if (searchButton) {
+        searchButton.addEventListener('click', function () {
+          searchInput.classList.toggle('expanded');
+          searchInput.focus(); // 点击按钮时将焦点移动到输入框
+        });
+      }
+
+      // 让点击输入框外部区域时收起输入框
+      document.addEventListener('click', function (event) {
+        if (!searchButton.contains(event.target) && !searchInput.contains(event.target)) {
+          searchInput.classList.remove('expanded');
+        }
+      });
+    });
+
+    function themeToggleHandler() {
+      console.log("Theme toggle button clicked");
+
+      // 切换主题
+      if (document.body.classList.contains('dark-theme')) {
+        document.body.classList.remove('dark-theme');
+        localStorage.removeItem('theme'); // 清除存储的主题
+      } else {
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+      }
+    }
+
+  </script>
+</head>
+<body>
+  <header>
+    <!-- 导航栏内容 -->
+    <nav class="navbar">
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/friends">识友</a></li>
+        <li><a href="/categories">分组</a></li>
+        <li><a href="/about">关于</a></li>
+        <li><a href="/more">更多</a></li>
+      </ul>
+      <div class="searchAndTheme">
+      <form id="search-form" class="search-form" action="/search" method="get">
+        <input type="text" name="q" placeholder="搜索文章..." class="search-input">
+        <button type="button" id="search-toggle" class="search-button">🔍</button>
+      </form>
+      <button id="theme-toggle" class="theme-toggle-button">
+        <img src="/icons/light-theme-icon.svg" id="light-icon" class="theme-icon" alt="Light Theme Icon">
+        <img src="/icons/dark-theme-icon.svg" id="dark-icon" class="theme-icon" alt="Dark Theme Icon">
+      </button>
+      </div>
+    </nav>
+  </header>
+</body>

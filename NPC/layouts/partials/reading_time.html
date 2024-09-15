@@ -1,0 +1,13 @@
+{{- $wordsPerMinute := 200 }}
+{{- $content := .Content }}
+{{- if not $content }} <!-- 如果没有内容则输出一个默认信息 -->
+  <p>预计阅读时间：无内容</p>
+{{- else }}
+  {{- $wordCount := (len (split $content " ")) }}
+  {{- $readingTime := div $wordCount $wordsPerMinute }}
+  {{ if gt $readingTime 1 }}
+    <p>{{ $readingTime }} 分钟</p>
+  {{ else }}
+    <p>少于 1 分钟</p>
+  {{ end }}
+{{- end }}

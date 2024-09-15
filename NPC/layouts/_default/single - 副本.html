@@ -1,0 +1,34 @@
+{{ define "main" }}
+  <div class="image-wrapper">
+    <div class="image" style="background-image: url('{{ .Params.image }}')"></div>
+    {{ if eq .Type "page" }}
+    <div class="hero-text">
+      <p>{{ .Params.hero_title | default .Title }}</p>
+    </div>
+    {{ end }}
+  </div>
+  <div class="main-wrapper">
+    <div class="content-wrapper">
+      <main class="content">
+        {{ if ne .Type "page" }}
+          <h1 class="h1-single">{{ .Title }}</h1>
+        {{ end }}
+        <p class="article-cate-single">{{ range .Params.Categories }}{{ . | title }}{{ end }}</p>
+        {{ if eq .Type "post" }}
+          <p class="article-meta-single">{{ .Date.Format "2006-01-02" }}</p>
+        {{ end }}
+
+        <!-- 文章内容 -->
+        <article class="article-body">
+          {{ $content := .Content }}
+          {{ $content := replaceRE `<img src="([^"]+)"` `<img src="$1" class="imageBig"` $content }}
+          {{ $content := replaceRE `<img src="([^"]+)"\s+alt="([^"]*)\s*\(big\)"` `<img src="$1" alt="$2" class="imageSmall"` $content }}
+          {{ $content | safeHTML }}
+        </article>
+        <br><br>
+        <!-- 评论系统 -->
+        {{ partial "comments.html" . }}
+      </main>
+    </div>
+  </div>
+{{ end }}

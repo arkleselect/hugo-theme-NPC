@@ -1,0 +1,11 @@
+<div class="sidebar">
+    {{ if .Site.Taxonomies.categories }}
+        <ul class="sidebar-categories">
+            {{ range $key, $taxonomy := .Site.Taxonomies.categories }}
+                <li class="sidebar-category">
+                    <a href="#{{ $key }}">{{ $key }}</a>
+                </li>
+            {{ end }}
+        </ul>
+    {{ end }}
+</div>

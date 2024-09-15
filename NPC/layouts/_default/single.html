@@ -1,0 +1,90 @@
+{{ define "main" }}
+  <div class="image-wrapper">
+    <div class="image" style="background-image: url('{{ .Params.image }}')"></div>
+    {{ if eq .Type "page" }}
+    <div class="hero-text">
+      <p>{{ .Params.hero_title | default .Title }}</p>
+    </div>
+    {{ end }}
+  </div>
+  <div class="main-wrapper">
+    <div class="content-wrapper">
+      <main class="content">
+        {{ if ne .Type "page" }}
+          <h1 class="h1-single">{{ .Title }}</h1>
+        {{ end }}
+        <p class="article-cate-single">{{ range .Params.Categories }}{{ . | title }}{{ end }}</p>
+        {{ if eq .Type "post" }}
+          <p class="article-meta-single">{{ .Date.Format "2006-01-02" }}</p>
+        {{ end }}
+
+        <!-- 文章内容 -->
+        <article class="article-body">
+          {{ $content := .Content }}
+          {{ $content := replaceRE `<img src="([^"]+)"` `<img src="$1" class="imageBig"` $content }}
+          {{ $content := replaceRE `<img src="([^"]+)"\s+alt="([^"]*)\s*\(big\)"` `<img src="$1" alt="$2" class="imageSmall"` $content }}
+          {{ $content | safeHTML }}
+        </article>
+
+
+<div class="article-footer">
+  <!-- 协议链接，分割线之上 -->
+  <div class="footer-item single">
+    <p class="hover-underline" id="CC">
+      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC
+      </a>
+    </p>
+  </div>
+
+  <!-- 分割线 -->
+  <hr class="footer-divider">
+
+  <!-- 分类和返回链接，分割线之下 -->
+  <div class="footer-item">
+    <div class="footer-content">
+        <p class="hover-underline">
+          <img class="category-icon" src="/icons/category.svg" alt="category icon">
+  {{ if .Params.Categories }}
+    {{ $categories := .Params.Categories }}
+    {{ $count := len $categories }}
+    {{ range $index, $category := $categories }}
+      <a href="/categories#{{ $category | urlize }}">{{ $category | title }}
+      </a>
+      {{ if lt (add $index 1) $count }}, {{ end }}
+    {{ end }}
+  {{ end }}
+</p>
+
+      <p class="hover-underline">
+        <a href="javascript:history.back()">返回</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<nav class="post-navigation">
+  <div class="nav-links-down">
+    {{ with .PrevInSection }}
+    <div class="nav-previous">
+      <a href="{{ .Permalink }}" rel="prev">
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+    </div>
+    {{ end }}
+    {{ with .NextInSection }}
+    <div class="nav-next">
+      <a href="{{ .Permalink }}" rel="next">
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+    </div>
+    {{ end }}
+  </div>
+</nav>
+
+        <!-- 评论系统 -->
+        {{ partial "comments.html" . }}
+      </main>
+    </div>
+  </div>
+{{ end }}

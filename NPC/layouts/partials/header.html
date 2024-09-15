@@ -1,0 +1,130 @@
+<head>
+  <!-- 引用 CSS 文件 -->
+  <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // 主题切换按钮的处理程序
+  const themeToggleButton = document.getElementById('theme-toggle');
+  const profileToggleButton = document.getElementById('profile-toggle');
+  const profileOverlay = document.getElementById('profile-overlay');
+  const searchButton = document.getElementById('search-toggle');
+  const searchInput = document.querySelector('.search-input');
+
+  // 读取并应用存储的主题
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    document.body.classList.add(savedTheme);
+  }
+
+  // **修改部分开始**
+  // 检查是否存在评论容器
+  var tcommentContainer = document.getElementById('tcomment');
+  if (tcommentContainer) {
+    // 设置 Utterances 的初始主题
+    const initialTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+    loadUtterances(initialTheme === 'dark' ? 'github-dark' : 'github-light');
+
+    // 监听主题切换事件，动态更新 Utterances 主题
+    document.addEventListener('themeChange', function (event) {
+      const newTheme = event.detail.theme;
+      console.log("Theme changed to: " + newTheme);
+      loadUtterances(newTheme === 'dark' ? 'github-dark' : 'github-light');
+    });
+  }
+  // **修改部分结束**
+
+  // 绑定点击事件处理程序
+  if (themeToggleButton) {
+    themeToggleButton.addEventListener('click', themeToggleHandler);
+  }
+
+  if (profileToggleButton) {
+    profileToggleButton.addEventListener('click', function () {
+      profileOverlay.classList.toggle('active');
+    });
+  }
+
+  if (searchButton) {
+    searchButton.addEventListener('click', function () {
+      searchInput.classList.toggle('expanded');
+      searchInput.focus(); // 点击按钮时将焦点移动到输入框
+    });
+  }
+
+  // 点击输入框外部区域时收起输入框和个人资料
+  document.addEventListener('click', function (event) {
+    if (!searchButton.contains(event.target) && !searchInput.contains(event.target)) {
+      searchInput.classList.remove('expanded');
+    }
+    if (!profileToggleButton.contains(event.target) && !profileOverlay.contains(event.target)) {
+      profileOverlay.classList.remove('active');
+    }
+  });
+});
+
+function themeToggleHandler() {
+  console.log("Theme toggle button clicked");
+
+  // 切换主题
+  if (document.body.classList.contains('dark-theme')) {
+    document.body.classList.remove('dark-theme');
+    localStorage.removeItem('theme'); // 清除存储的主题
+
+    // 触发主题切换事件为浅色
+    const event = new CustomEvent('themeChange', { detail: { theme: 'light' } });
+    document.dispatchEvent(event);
+  } else {
+    document.body.classList.add('dark-theme');
+    localStorage.setItem('theme', 'dark-theme');
+
+    // 触发主题切换事件为深色
+    const event = new CustomEvent('themeChange', { detail: { theme: 'dark' } });
+    document.dispatchEvent(event);
+  }
+}
+
+// 动态加载 Utterances 评论系统
+function loadUtterances(theme) {
+  var script = document.createElement("script");
+  script.src = "https://utteranc.es/client.js";
+  script.setAttribute("repo", "arkleselect/comments");
+  script.setAttribute("issue-term", "title");
+  script.setAttribute("theme", theme);
+  script.setAttribute("crossorigin", "anonymous");
+  script.async = true;
+
+  // 获取评论容器
+  var container = document.getElementById("tcomment");
+  if (!container) {
+    console.warn("Utterances container not found on this page.");
+    return;
+  }
+
+  // 清空之前的 Utterances 容器
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+  container.appendChild(script);
+}
+</script>
+
+
+</head>
+<body>
+  <header>
+    <!-- 导航栏内容 -->
+    <nav class="navbar">
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/friends">识友</a></li>
+        <li><a href="/categories">分组</a></li>
+        <li><a href="/about">关于</a></li>
+        <li><a href="/more">更多</a></li>
+      </ul>
+      <button id="theme-toggle" class="theme-toggle-button">
+        <img src="/icons/light-theme-icon.svg" id="light-icon" class="theme-icon" alt="Light Theme Icon">
+        <img src="/icons/dark-theme-icon.svg" id="dark-icon" class="theme-icon" alt="Dark Theme Icon">
+      </button>
+    </nav>
+  </header>
+</body>
